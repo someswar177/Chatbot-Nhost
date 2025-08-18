@@ -43,9 +43,6 @@ npm install
 ### 4️⃣ Run Development Server
 npm run dev
 
-### 5️⃣ Build for Production
-npm run build
-
 ---
 
 ## 🔐 Authentication & Permissions
