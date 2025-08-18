@@ -28,6 +28,7 @@ It is deployed on **Netlify**.
 
 ### 1️⃣ Clone the Repository
 git clone https://github.com/someswar177/Chatbot-Nhost.git
+
 cd Chatbot-Nhost/frontend
 
 ### 2️⃣ Install Dependencies
