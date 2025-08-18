@@ -34,10 +34,10 @@ cd Chatbot-Nhost/frontend
 npm install
 
 ### 3️⃣ Environment Variables
-echo "VITE_NHOST_SUBDOMAIN=ctvvnpalxppmbnqswokp" >> .env
-echo "VITE_NHOST_REGION=ap-south-1" >> .env
-echo "VITE_HASURA_HTTP=https://ctvvnpalxppmbnqswokp.hasura.ap-south-1.nhost.run/v1/graphql" >> .env
-echo "VITE_HASURA_WS=wss://ctvvnpalxppmbnqswokp.hasura.ap-south-1.nhost.run/v1/graphql" >> .env
+"VITE_NHOST_SUBDOMAIN=ctvvnpalxppmbnqswokp"
+"VITE_NHOST_REGION=ap-south-1"
+"VITE_HASURA_HTTP=https://ctvvnpalxppmbnqswokp.hasura.ap-south-1.nhost.run/v1/graphql"
+"VITE_HASURA_WS=wss://ctvvnpalxppmbnqswokp.hasura.ap-south-1.nhost.run/v1/graphql"
 
 ### 4️⃣ Run Development Server
 npm run dev
