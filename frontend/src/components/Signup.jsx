@@ -32,12 +32,12 @@ export default function Signup() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-100 flex items-center justify-center px-4 sm:px-6 lg:px-8 font-sans antialiased">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-100 flex items-center justify-center px-4 sm:px-6 lg:px-8 font-sans antialiased"> {/* UPDATED: responsive padding */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="max-w-md w-full space-y-8"
+        className="max-w-sm sm:max-w-md w-full space-y-6 sm:space-y-8" // UPDATED: responsive width and spacing
       >
         {/* Header */}
         <motion.div
@@ -50,14 +50,14 @@ export default function Signup() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.5, type: "spring", stiffness: 200 }}
-            className="mx-auto h-16 w-16 bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl flex items-center justify-center mb-6 shadow-xl"
+            className="mx-auto h-12 w-12 sm:h-16 sm:w-16 bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 shadow-xl" // UPDATED: responsive size and margin
           >
-            <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-6 w-6 sm:h-8 sm:w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"> {/* UPDATED: responsive icon size */}
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
             </svg>
           </motion.div>
-          <h2 className="text-3xl font-bold text-slate-900 mb-2">Create account</h2>
-          <p className="text-slate-600 text-sm">Join us and start your AI conversations</p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Create account</h2> {/* UPDATED: responsive text size */}
+          <p className="text-slate-600 text-xs sm:text-sm">Join us and start your AI conversations</p> {/* UPDATED: responsive text size */}
         </motion.div>
 
         {/* Form Card */}
@@ -65,21 +65,21 @@ export default function Signup() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
-          className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8"
+          className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 p-6 sm:p-8" // UPDATED: responsive padding and border radius
         >
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}> {/* UPDATED: responsive spacing */}
             {/* Error Message */}
             {(error || validationError) && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-red-50 border border-red-200 rounded-xl p-4"
+                className="bg-red-50 border border-red-200 rounded-xl p-3 sm:p-4" // UPDATED: responsive padding
               >
                 <div className="flex items-center">
-                  <svg className="h-5 w-5 text-red-400 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="h-4 w-4 sm:h-5 sm:w-5 text-red-400 mr-2 sm:mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"> {/* UPDATED: responsive icon size and margin */}
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                   </svg>
-                  <span className="text-sm font-medium text-red-800">
+                  <span className="text-xs sm:text-sm font-medium text-red-800"> {/* UPDATED: responsive text size */}
                     {validationError || error?.message || 'An error occurred during sign up'}
                   </span>
                 </div>
@@ -88,7 +88,7 @@ export default function Signup() {
 
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-3">
+              <label htmlFor="email" className="block text-xs sm:text-sm font-semibold text-slate-700 mb-2 sm:mb-3"> {/* UPDATED: responsive text size and margin */}
                 Email Address
               </label>
               <input
@@ -99,14 +99,14 @@ export default function Signup() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3.5 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 focus:bg-white hover:border-slate-400"
+                className="w-full px-3 sm:px-4 py-3 sm:py-3.5 border border-slate-300 rounded-xl text-sm sm:text-base text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 focus:bg-white hover:border-slate-400 min-h-[44px]" // UPDATED: responsive padding, text size, and touch target
                 placeholder="Enter your email address"
               />
             </div>
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-3">
+              <label htmlFor="password" className="block text-xs sm:text-sm font-semibold text-slate-700 mb-2 sm:mb-3"> {/* UPDATED: responsive text size and margin */}
                 Password
               </label>
               <input
@@ -117,17 +117,17 @@ export default function Signup() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3.5 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 focus:bg-white hover:border-slate-400"
+                className="w-full px-3 sm:px-4 py-3 sm:py-3.5 border border-slate-300 rounded-xl text-sm sm:text-base text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 focus:bg-white hover:border-slate-400 min-h-[44px]" // UPDATED: responsive padding, text size, and touch target
                 placeholder="Create a secure password"
               />
-              <p className="mt-2 text-xs text-slate-500">
+              <p className="mt-1 sm:mt-2 text-xs text-slate-500"> {/* UPDATED: responsive margin */}
                 Must be at least 6 characters long
               </p>
             </div>
 
             {/* Confirm Password Field */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-slate-700 mb-3">
+              <label htmlFor="confirmPassword" className="block text-xs sm:text-sm font-semibold text-slate-700 mb-2 sm:mb-3"> {/* UPDATED: responsive text size and margin */}
                 Confirm Password
               </label>
               <input
@@ -138,7 +138,7 @@ export default function Signup() {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3.5 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 focus:bg-white hover:border-slate-400"
+                className="w-full px-3 sm:px-4 py-3 sm:py-3.5 border border-slate-300 rounded-xl text-sm sm:text-base text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 focus:bg-white hover:border-slate-400 min-h-[44px]" // UPDATED: responsive padding, text size, and touch target
                 placeholder="Confirm your password"
               />
             </div>
@@ -149,29 +149,29 @@ export default function Signup() {
               disabled={isLoading}
               whileHover={{ scale: isLoading ? 1 : 1.02 }}
               whileTap={{ scale: isLoading ? 1 : 0.98 }}
-              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:from-emerald-400 disabled:to-teal-400 text-white font-semibold py-3.5 px-4 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:from-emerald-400 disabled:to-teal-400 text-white font-semibold py-3 sm:py-3.5 px-4 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed shadow-lg hover:shadow-xl text-sm sm:text-base min-h-[44px]" // UPDATED: responsive padding, text size, and touch target
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin -ml-1 mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5 text-white" fill="none" viewBox="0 0 24 24"> {/* UPDATED: responsive icon size and margin */}
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Creating account...
+                  <span className="text-sm sm:text-base">Creating account...</span> {/* UPDATED: responsive text size */}
                 </div>
               ) : (
-                'Create Account'
+                <span className="text-sm sm:text-base">Create Account</span> // UPDATED: responsive text size
               )}
             </motion.button>
           </form>
 
           {/* Login Link */}
-          <div className="mt-8 text-center">
-            <p className="text-slate-600 text-sm">
+          <div className="mt-6 sm:mt-8 text-center"> {/* UPDATED: responsive margin */}
+            <p className="text-slate-600 text-xs sm:text-sm"> {/* UPDATED: responsive text size */}
               Already have an account?{' '}
               <Link
                 to="/login"
-                className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors duration-200 hover:underline"
+                className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors duration-200 hover:underline text-xs sm:text-sm" // UPDATED: responsive text size
               >
                 Sign in here
               </Link>

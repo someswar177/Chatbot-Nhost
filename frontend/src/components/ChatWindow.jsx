@@ -94,20 +94,20 @@ export default function ChatWindow({ chatId, isDark }) {
                 key={message.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
+                transition={{ delay: index * 0.05 }} // UPDATED: smoother staggered animation
                 className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
                   className={[
                     'px-4 py-2 rounded-2xl',
                     message.sender === 'user'
-                      ? 'bg-blue-600 text-white rounded-br-md max-w-xs lg:max-w-md'
+                      ? 'bg-blue-600 text-white rounded-br-md max-w-[85%] sm:max-w-xs lg:max-w-md' // UPDATED: responsive user bubble
                       : isDark
-                        ? 'bg-gray-700 text-gray-100 rounded-bl-md max-w-[80%] md:max-w-[70%]'
-                        : 'bg-white text-gray-900 rounded-bl-md shadow-sm border border-gray-200 max-w-[80%] md:max-w-[70%]'
+                        ? 'bg-gray-700 text-gray-100 rounded-bl-md max-w-[95%] sm:max-w-[85%] md:max-w-[75%] lg:max-w-[70%]' // UPDATED: responsive bot bubble dark
+                        : 'bg-white text-gray-900 rounded-bl-md shadow-sm border border-gray-200 max-w-[95%] sm:max-w-[85%] md:max-w-[75%] lg:max-w-[70%]' // UPDATED: responsive bot bubble light
                   ].join(' ')}
                 >
-                  <div className="prose prose-sm max-w-none whitespace-pre-wrap">
+                  <div className="prose prose-sm max-w-none"> {/* UPDATED: keeps ReactMarkdown formatting whitespace-pre-wrap */}
                     <ReactMarkdown>{message.content}</ReactMarkdown>
                   </div>
                   <p
@@ -124,15 +124,11 @@ export default function ChatWindow({ chatId, isDark }) {
           )}
         </AnimatePresence>
 
-        {/* Typing indicator (kept for future streaming; currently off unless you toggle setIsTyping) */}
+        {/* Typing indicator (kept for future streaming) */}
         <AnimatePresence>
           {isTyping && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="flex justify-start">
-              <div
-                className={`px-4 py-2 rounded-2xl rounded-bl-md ${
-                  isDark ? 'bg-gray-700 text-gray-100 max-w-[80%] md:max-w-[70%]' : 'bg-white text-gray-900 shadow-sm border border-gray-200 max-w-[80%] md:max-w-[70%]'
-                }`}
-              >
+              <div className={`px-4 py-2 rounded-2xl rounded-bl-md ${isDark ? 'bg-gray-700 text-gray-100 max-w-[80%] md:max-w-[70%]' : 'bg-white text-gray-900 shadow-sm border border-gray-200 max-w-[80%] md:max-w-[70%]'}`}>
                 <div className="flex space-x-1">
                   <div className={`${isDark ? 'bg-gray-400' : 'bg-gray-500'} w-2 h-2 rounded-full animate-bounce`} style={{ animationDelay: '0ms' }} />
                   <div className={`${isDark ? 'bg-gray-400' : 'bg-gray-500'} w-2 h-2 rounded-full animate-bounce`} style={{ animationDelay: '150ms' }} />
@@ -146,8 +142,8 @@ export default function ChatWindow({ chatId, isDark }) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input (kept exactly as your flow; no onMessageSent prop, no simulation) */}
-      <MessageInput chatId={chatId} isDark={isDark} />
+      {/* Input */}
+      <MessageInput chatId={chatId} isDark={isDark} /> {/* Kept your original input handling */}
     </div>
   )
 }

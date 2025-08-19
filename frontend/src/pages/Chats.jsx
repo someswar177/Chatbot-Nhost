@@ -8,6 +8,7 @@ import ChatWindow from '../components/ChatWindow'
 export default function Chats() {
   const [selectedChatId, setSelectedChatId] = useState(null)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false) // UPDATED: add mobile sidebar state
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   const handleChatSelect = (chatId) => {
@@ -16,6 +17,14 @@ export default function Chats() {
 
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed)
+  }
+
+  const toggleMobileSidebar = () => { // UPDATED: add mobile sidebar toggle
+    setIsMobileSidebarOpen(!isMobileSidebarOpen)
+  }
+
+  const closeMobileSidebar = () => { // UPDATED: add mobile sidebar close
+    setIsMobileSidebarOpen(false)
   }
 
   const toggleTheme = () => {
@@ -28,7 +37,11 @@ export default function Chats() {
         <div className={`min-h-screen transition-colors duration-200 ${
           isDarkMode ? 'bg-gray-900' : 'bg-gray-50'
         }`}>
-          <Navbar isDark={isDarkMode} />
+          <Navbar 
+            isDark={isDarkMode} 
+            onToggleSidebar={toggleMobileSidebar} // UPDATED: pass mobile sidebar toggle
+            showSidebarToggle={true} // UPDATED: show hamburger button
+          />
           
           <div className="flex h-[calc(100vh-64px)]">
             <Sidebar
@@ -38,6 +51,8 @@ export default function Chats() {
               onToggleCollapse={toggleSidebar}
               isDark={isDarkMode}
               onToggleTheme={toggleTheme}
+              isMobileOpen={isMobileSidebarOpen} // UPDATED: pass mobile sidebar state
+              onMobileClose={closeMobileSidebar} // UPDATED: pass mobile sidebar close
             />
             
             <ChatWindow 
