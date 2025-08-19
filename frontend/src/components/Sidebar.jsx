@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
-import { useQuery, useMutation } from '@apollo/client'
-import { gql } from '@apollo/client'
+// Sidebar.jsx
+import { useState } from 'react'
+import { useQuery, useMutation, gql } from '@apollo/client'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const MY_CHATS_QUERY = gql`
   query MyChats {
-    chats(order_by: {created_at: desc}) {
+    chats(order_by: { created_at: desc }) {
       id
       title
       created_at
@@ -23,23 +23,51 @@ const NEW_CHAT_MUTATION = gql`
   }
 `
 
-export default function Sidebar({ selectedChatId, onChatSelect, isCollapsed, onToggleCollapse, isDark, onToggleTheme }) {
-  const { data, loading, error, refetch } = useQuery(MY_CHATS_QUERY)
+export default function Sidebar({
+  selectedChatId,
+  onChatSelect,
+  isCollapsed,
+  onToggleCollapse,
+  isDark,
+  onToggleTheme
+}) {
+  const { data, loading, error } = useQuery(MY_CHATS_QUERY)
   const [newChat] = useMutation(NEW_CHAT_MUTATION, {
     refetchQueries: [{ query: MY_CHATS_QUERY }]
   })
 
-  const handleNewChat = async () => {
+  // Inline "New Chat" input state
+  const [isCreatingNewChat, setIsCreatingNewChat] = useState(false)
+  const [newChatTitle, setNewChatTitle] = useState('')
+  const [isSavingNewChat, setIsSavingNewChat] = useState(false) // guard to avoid double-submit on Enter+Blur
+
+  const handleNewChat = () => {
+    setIsCreatingNewChat(true)
+    setNewChatTitle('')
+  }
+
+  const handleCreateChat = async () => {
+    if (isSavingNewChat) return
+    setIsSavingNewChat(true)
     try {
-      const result = await newChat({
-        variables: { title: 'New Chat' }
-      })
+      const title = (newChatTitle || '').trim() || 'New Chat'
+      const result = await newChat({ variables: { title } })
       if (result.data?.insert_chats_one) {
         onChatSelect(result.data.insert_chats_one.id)
       }
     } catch (err) {
       console.error('Error creating new chat:', err)
+    } finally {
+      setIsCreatingNewChat(false)
+      setNewChatTitle('')
+      setIsSavingNewChat(false)
     }
+  }
+
+  const handleCancelNewChat = () => {
+    if (isSavingNewChat) return
+    setIsCreatingNewChat(false)
+    setNewChatTitle('')
   }
 
   const formatDate = (dateString) => {
@@ -47,7 +75,7 @@ export default function Sidebar({ selectedChatId, onChatSelect, isCollapsed, onT
     const now = new Date()
     const diffTime = Math.abs(now - date)
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    
+
     if (diffDays === 1) return 'Today'
     if (diffDays === 2) return 'Yesterday'
     if (diffDays <= 7) return `${diffDays - 1} days ago`
@@ -59,10 +87,8 @@ export default function Sidebar({ selectedChatId, onChatSelect, isCollapsed, onT
       initial={false}
       animate={{ width: isCollapsed ? 60 : 280 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className={`h-full border-r transition-colors duration-200 flex flex-col ${
-        isDark 
-          ? 'bg-gray-900 border-gray-700' 
-          : 'bg-white border-gray-200'
+      className={`h-full border-r transition-colors duration-200 flex flex-col font-sans antialiased ${
+        isDark ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'
       }`}
     >
       {/* Header */}
@@ -74,47 +100,51 @@ export default function Sidebar({ selectedChatId, onChatSelect, isCollapsed, onT
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className={`text-lg font-semibold ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}
+                className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}
               >
                 Chats
               </motion.h2>
             )}
           </AnimatePresence>
-          
+
           <div className="flex items-center space-x-2">
             <button
               onClick={onToggleTheme}
               className={`p-2 rounded-lg transition-colors ${
-                isDark 
-                  ? 'hover:bg-gray-800 text-gray-300' 
-                  : 'hover:bg-gray-100 text-gray-600'
+                isDark ? 'hover:bg-gray-800 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
               }`}
             >
               {isDark ? (
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
                 </svg>
               ) : (
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                  />
                 </svg>
               )}
             </button>
-            
+
             <button
               onClick={onToggleCollapse}
               className={`p-2 rounded-lg transition-colors ${
-                isDark 
-                  ? 'hover:bg-gray-800 text-gray-300' 
-                  : 'hover:bg-gray-100 text-gray-600'
+                isDark ? 'hover:bg-gray-800 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
               }`}
             >
-              <svg 
-                className={`w-4 h-4 transition-transform ${isCollapsed ? 'rotate-180' : ''}`} 
-                fill="none" 
-                stroke="currentColor" 
+              <svg
+                className={`w-4 h-4 transition-transform ${isCollapsed ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -122,7 +152,7 @@ export default function Sidebar({ selectedChatId, onChatSelect, isCollapsed, onT
             </button>
           </div>
         </div>
-        
+
         {/* New Chat Button */}
         <AnimatePresence>
           {!isCollapsed && (
@@ -150,18 +180,18 @@ export default function Sidebar({ selectedChatId, onChatSelect, isCollapsed, onT
       <div className="flex-1 overflow-y-auto">
         {loading && (
           <div className="p-4 text-center">
-            <div className={`animate-spin rounded-full h-6 w-6 border-b-2 mx-auto ${
-              isDark ? 'border-gray-400' : 'border-gray-600'
-            }`}></div>
+            <div
+              className={`animate-spin rounded-full h-6 w-6 border-b-2 mx-auto ${
+                isDark ? 'border-gray-400' : 'border-gray-600'
+              }`}
+            />
             <AnimatePresence>
               {!isCollapsed && (
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className={`text-sm mt-2 ${
-                    isDark ? 'text-gray-400' : 'text-gray-500'
-                  }`}
+                  className={`text-sm mt-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
                 >
                   Loading chats...
                 </motion.p>
@@ -174,12 +204,7 @@ export default function Sidebar({ selectedChatId, onChatSelect, isCollapsed, onT
           <div className="p-4">
             <AnimatePresence>
               {!isCollapsed && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="text-red-500 text-sm text-center"
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-red-500 text-sm text-center">
                   Error loading chats
                 </motion.div>
               )}
@@ -187,26 +212,47 @@ export default function Sidebar({ selectedChatId, onChatSelect, isCollapsed, onT
           </div>
         )}
 
-        {data?.chats?.length === 0 && !loading && (
-          <div className="p-4 text-center">
-            <AnimatePresence>
-              {!isCollapsed && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className={`text-sm ${
-                    isDark ? 'text-gray-400' : 'text-gray-500'
-                  }`}
-                >
-                  No chats yet. Create your first chat!
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        )}
-
         <div className="p-2">
+          {/* Inline New Chat Input */}
+          <AnimatePresence>
+            {isCreatingNewChat && !isCollapsed && (
+              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="mb-2">
+                <input
+                  type="text"
+                  value={newChatTitle}
+                  onChange={(e) => setNewChatTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleCreateChat()
+                    if (e.key === 'Escape') handleCancelNewChat()
+                  }}
+                  onBlur={handleCreateChat}
+                  placeholder="New Chat"
+                  autoFocus
+                  disabled={isSavingNewChat}
+                  className={`w-full p-3 rounded-lg text-sm transition-colors ${
+                    isDark
+                      ? 'bg-gray-800 border border-gray-600 text-white placeholder-gray-400 focus:border-blue-500'
+                      : 'bg-gray-100 border border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500'
+                  } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Empty state */}
+          {data?.chats?.length === 0 && !loading && !isCreatingNewChat && (
+            <div className="p-4 text-center">
+              <AnimatePresence>
+                {!isCollapsed && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                    No chats yet. Create your first chat!
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+
+          {/* Chat items */}
           {data?.chats?.map((chat) => (
             <motion.button
               key={chat.id}
@@ -225,29 +271,18 @@ export default function Sidebar({ selectedChatId, onChatSelect, isCollapsed, onT
             >
               <AnimatePresence>
                 {!isCollapsed ? (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <div className="font-medium text-sm truncate mb-1">
-                      {chat.title}
-                    </div>
-                    <div className={`text-xs ${
-                      selectedChatId === chat.id
-                        ? isDark ? 'text-blue-200' : 'text-blue-600'
-                        : isDark ? 'text-gray-500' : 'text-gray-500'
-                    }`}>
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <div className="font-medium text-sm truncate mb-1">{chat.title}</div>
+                    <div
+                      className={`text-xs ${
+                        selectedChatId === chat.id ? (isDark ? 'text-blue-200' : 'text-blue-600') : isDark ? 'text-gray-500' : 'text-gray-500'
+                      }`}
+                    >
                       {formatDate(chat.created_at)}
                     </div>
                   </motion.div>
                 ) : (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="flex justify-center"
-                  >
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex justify-center">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>

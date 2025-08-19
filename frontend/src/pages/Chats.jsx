@@ -24,7 +24,7 @@ export default function Chats() {
 
   return (
     <ApolloProvider client={apolloClient}>
-      <div className={`min-h-screen ${isDarkMode ? 'dark' : ''}`}>
+      <div className={`min-h-screen font-sans antialiased ${isDarkMode ? 'dark' : ''}`}>
         <div className={`min-h-screen transition-colors duration-200 ${
           isDarkMode ? 'bg-gray-900' : 'bg-gray-50'
         }`}>
