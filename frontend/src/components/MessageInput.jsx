@@ -2,68 +2,39 @@ import { useState } from 'react'
 import { useMutation, gql } from '@apollo/client'
 import { motion } from 'framer-motion'
 
-const SEND_MESSAGE_MUTATION = gql`
+const SEND_MESSAGE = gql`
   mutation SendMessage($chat_id: uuid!, $content: String!) {
-    insert_messages_one(object: { chat_id: $chat_id, sender: "user", content: $content }) {
-      id
-      sender
-      content
-      created_at
+    sendMessage(chat_id: $chat_id, content: $content) {
+      success
+      message
+      data {
+        id
+        sender
+        content
+        created_at
+      }
     }
   }
 `
 
-const SEND_BOT_MESSAGE_MUTATION = gql`
-  mutation SendBotMessage($chat_id: uuid!, $content: String!) {
-    insert_messages_one(object: { chat_id: $chat_id, sender: "bot", content: $content }) {
-      id
-      sender
-      content
-      created_at
-    }
-  }
-`
-
-export default function MessageInput({ chatId, isDark, onMessageSent }) {
+export default function MessageInput({ chatId, isDark }) {
   const [message, setMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  
-  const [sendMessage] = useMutation(SEND_MESSAGE_MUTATION)
-  const [sendBotMessage] = useMutation(SEND_BOT_MESSAGE_MUTATION)
+  const [sendMessage, { loading }] = useMutation(SEND_MESSAGE)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!message.trim() || isLoading) return
+    if (!message.trim() || loading) return
 
     const messageContent = message.trim()
     setMessage('')
-    setIsLoading(true)
 
     try {
-      // Send user message
       await sendMessage({
-        variables: {
-          chat_id: chatId,
-          content: messageContent
-        }
+        variables: { chat_id: chatId, content: messageContent }
       })
-
-      // Get bot response and send it
-      if (onMessageSent) {
-        const botResponse = await onMessageSent(messageContent)
-        await sendBotMessage({
-          variables: {
-            chat_id: chatId,
-            content: botResponse
-          }
-        })
-      }
     } catch (error) {
       console.error('Error sending message:', error)
-      // Restore message on error
-      setMessage(messageContent)
-    } finally {
-      setIsLoading(false)
+      setMessage(messageContent) // restore message on error
     }
   }
 
@@ -87,7 +58,7 @@ export default function MessageInput({ chatId, isDark, onMessageSent }) {
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type your message..."
-            disabled={isLoading}
+            disabled={loading}
             rows={1}
             className={`w-full px-4 py-3 rounded-2xl resize-none transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 ${
               isDark
@@ -108,18 +79,18 @@ export default function MessageInput({ chatId, isDark, onMessageSent }) {
         
         <motion.button
           type="submit"
-          disabled={!message.trim() || isLoading}
+          disabled={!message.trim() || loading}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className={`px-6 py-3 rounded-2xl font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 ${
-            !message.trim() || isLoading
+            !message.trim() || loading
               ? isDark
                 ? 'bg-gray-700 text-gray-400'
                 : 'bg-gray-200 text-gray-400'
               : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl'
           }`}
         >
-          {isLoading ? (
+          {loading ? (
             <>
               <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
