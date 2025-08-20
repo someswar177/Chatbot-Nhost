@@ -6,9 +6,9 @@ import App from './App.jsx'
 import './index.css'
 
 createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <NhostProvider nhost={nhost}>
       <App />
     </NhostProvider>
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )
