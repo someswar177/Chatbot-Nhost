@@ -5,8 +5,14 @@ It is deployed on **Netlify**.
 
 ---
 
+🎥 Demo Video
+
+👉 [Watch Demo Video](https://drive.google.com/file/d/1g_JFH-Of84QBOPxe-zmf8z2f80GnaR3K/view?usp=sharing)
+
+---
+
 ## 🚀 Features
-- Email-based **Sign Up / Sign In** using Nhost Auth.
+- **Sign Up / Sign In** using Nhost Auth.
 - **Chats & Messages** stored in Hasura Postgres with Row-Level Security (RLS).
 - Real-time chat updates using **GraphQL subscriptions**.
 - Chatbot powered by **Hasura Actions → n8n → OpenRouter**.
@@ -34,11 +40,11 @@ cd Chatbot-Nhost/frontend
 ### 2️⃣ Install Dependencies
 npm install
 
-### 3️⃣ Environment Variables
+<!-- ### 3️⃣ Environment Variables
 "VITE_NHOST_SUBDOMAIN=ctvvnpalxppmbnqswokp"
 "VITE_NHOST_REGION=ap-south-1"
 "VITE_HASURA_HTTP=https://ctvvnpalxppmbnqswokp.hasura.ap-south-1.nhost.run/v1/graphql"
-"VITE_HASURA_WS=wss://ctvvnpalxppmbnqswokp.hasura.ap-south-1.nhost.run/v1/graphql"
+"VITE_HASURA_WS=wss://ctvvnpalxppmbnqswokp.hasura.ap-south-1.nhost.run/v1/graphql" -->
 
 ### 4️⃣ Run Development Server
 npm run dev
@@ -46,7 +52,7 @@ npm run dev
 ---
 
 ## 🔐 Authentication & Permissions
-- Users must **sign up / log in** via email to access the app.
+- Users must **sign up / log in** to access the app.
 - Hasura **RLS policies** applied on `chats` and `messages`:
   - Users can only **insert/select/update/delete** their own data.
 - `user` role is enforced for all queries, mutations, and subscriptions.
@@ -63,6 +69,6 @@ npm run dev
 ---
 
 ## 🌐 Deployment
-- **Frontend:** Hosted on Netlify → [Your Netlify Link]  
+- **Frontend:** Hosted on Netlify → https://chatbot-nhost.netlify.app/ 
 - **Backend:** Nhost project (Auth + Hasura + DB)  
 - **Automation:** n8n workflow running webhook + OpenRouter integration  

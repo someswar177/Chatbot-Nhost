@@ -5,16 +5,13 @@ import { getMainDefinition } from '@apollo/client/utilities'
 import { createClient } from 'graphql-ws'
 import { nhost } from './nhost'
 
-// Read from Vite env
 const HASURA_HTTP = import.meta.env.VITE_HASURA_HTTP
 const HASURA_WS = import.meta.env.VITE_HASURA_WS
 
-// HTTP link for queries and mutations
 const httpLink = createHttpLink({
   uri: HASURA_HTTP,
 })
 
-// WebSocket link for subscriptions
 const wsLink = new GraphQLWsLink(
   createClient({
     url: HASURA_WS,
@@ -26,7 +23,6 @@ const wsLink = new GraphQLWsLink(
   })
 )
 
-// Auth link to add authorization header
 const authLink = setContext((_, { headers }) => {
   const token = nhost.auth.getAccessToken()
   return {
@@ -37,7 +33,6 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-// Split link to route queries/mutations to HTTP and subscriptions to WebSocket
 const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query)
